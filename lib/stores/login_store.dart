@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 
 part 'login_store.g.dart';
@@ -57,13 +58,22 @@ abstract class _LoginStore with Store {
   @observable
   bool loading = false;
 
+  @observable
+  bool isLoggedIn = false;
+
+  ///Ao pressionar o botao login retorna essa função
+  @computed
+  VoidCallback? get loginPressed =>
+      (isEmailValid && isPasswordValid && !loading) ? login : null;
+
   ///Realiza o login do usuário
   @action
-  Future login() async {
+  Future<void> login() async {
     loading = true;
 
     await Future.delayed(Duration(seconds: 2));
 
     loading = false;
+    isLoggedIn = true;
   }
 }
