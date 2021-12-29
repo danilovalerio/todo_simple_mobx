@@ -36,5 +36,19 @@ abstract class _LoginStore with Store {
   ///Computed Serve para combinar stados de observable,
   ///sempre que usarmos computed tem que ter um get
   @computed
-  bool get isFormValid => email.length >= 6 && password.length >= 6;
+  bool get isEmailValid => isEmail(email);
+
+  @computed
+  bool get isPasswordValid => password.length >= 6;
+
+  @computed
+  bool get isFormValid => isEmailValid && isPasswordValid;
+
+  bool isEmail(String em) {
+    String p = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regExp = RegExp(p);
+
+    return regExp.hasMatch(em);
+  }
+
 }
