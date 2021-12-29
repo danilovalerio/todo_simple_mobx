@@ -57,7 +57,7 @@ abstract class _LoginStore with Store {
   @observable
   bool loading = false;
 
-  ///Loading
+  ///Realiza o login do usuário
   @action
   Future login() async {
     loading = true;
