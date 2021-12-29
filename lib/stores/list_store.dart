@@ -2,6 +2,7 @@
 
 
 import 'package:mobx/mobx.dart';
+import 'package:todo_simple_mobx/stores/tarefa_store.dart';
 part 'list_store.g.dart';
 
 class ListStore = _ListStore with _$ListStore;
@@ -22,11 +23,11 @@ abstract class _ListStore with Store {
   @observable
   List<String> todoList = [];*/
   ///Essa lista é observavel se mudar algo internamente ela sabe que mudou e notifica os observadores
-  ObservableList<String> todoList = ObservableList<String>();
+  ObservableList<TarefaStore> todoList = ObservableList<TarefaStore>();
 
   @action
   void addTodo(){
-    todoList.add(_newTodoTitle);
+    todoList.add(TarefaStore(_newTodoTitle));
   }
 
 }

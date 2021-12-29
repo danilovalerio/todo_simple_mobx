@@ -25,7 +25,7 @@ class _ListScreenState extends State<ListScreen> {
             children: <Widget>[
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 2),
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 2),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -63,10 +63,10 @@ class _ListScreenState extends State<ListScreen> {
                             onChanged: listStore.setNewTodoTitle,
                             suffix: listStore.titleValid
                                 ? CustomIconButton(
-                                    radius: 32,
-                                    iconData: Icons.add,
-                                    onTap: listStore.addTodo,
-                                  )
+                              radius: 32,
+                              iconData: Icons.add,
+                              onTap: listStore.addTodo,
+                            )
                                 : null,
                           );
                         }),
@@ -79,11 +79,24 @@ class _ListScreenState extends State<ListScreen> {
                               return ListView.separated(
                                 itemCount: listStore.todoList.length,
                                 itemBuilder: (_, index) {
-                                  return ListTile(
-                                    title: Text(
-                                     listStore.todoList[index],
-                                    ),
-                                    onTap: () {},
+                                  final todo = listStore.todoList[index];
+                                  return Observer(
+                                    builder: (_) {
+                                      return ListTile(
+                                        title: Text(
+                                          todo.title,
+                                          style: TextStyle(
+                                              decoration: todo.done
+                                                  ? TextDecoration.lineThrough
+                                                  : null,
+                                              color: todo.done
+                                                  ? Colors.grey
+                                                  : Colors.black
+                                          ),
+                                        ),
+                                        onTap: todo.toggleDone,
+                                      );
+                                    },
                                   );
                                 },
                                 separatorBuilder: (_, __) {
