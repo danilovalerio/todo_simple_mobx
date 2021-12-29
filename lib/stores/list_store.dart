@@ -17,4 +17,12 @@ abstract class _ListStore with Store {
   @computed
   bool get titleValid => _newTodoTitle.isNotEmpty;
 
+  @observable
+  List<String> todoList = [];
+
+  @action
+  void addTodo(){
+    todoList = List.from(todoList..add(_newTodoTitle));
+  }
+
 }
