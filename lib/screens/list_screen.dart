@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:todo_simple_mobx/stores/list_store.dart';
 import 'package:todo_simple_mobx/widgets/custom_icon_button.dart';
 import 'package:todo_simple_mobx/widgets/custom_text_field.dart';
 
@@ -11,6 +13,8 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
+
+  ListStore listStore = ListStore();
 
   @override
   Widget build(BuildContext context) {
@@ -56,19 +60,19 @@ class _ListScreenState extends State<ListScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: <Widget>[
-                        CustomTextField(
-                          hint: 'Tarefa',
-                          onChanged: (todo){
-
-                          },
-                          suffix: CustomIconButton(
-                            radius: 32,
-                            iconData: Icons.add,
-                            onTap: (){
-
-                            },
-                          ),
-                        ),
+                        Observer(builder: (_){
+                          return CustomTextField(
+                            hint: 'Tarefa',
+                            onChanged: listStore.setNewTodoTitle,
+                            suffix: listStore.titleValid ? CustomIconButton(
+                              radius: 32,
+                              iconData: Icons.add,
+                              onTap: (){
+                              },
+                            )
+                                : null,
+                          );
+                        }),
                         const SizedBox(height: 8,),
                         Expanded(
                           child: ListView.separated(
