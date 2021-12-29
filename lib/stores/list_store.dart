@@ -17,12 +17,16 @@ abstract class _ListStore with Store {
   @computed
   bool get titleValid => _newTodoTitle.isNotEmpty;
 
+  /*
+  //no caso de lista utilizar o ObservableList<T>
   @observable
-  List<String> todoList = [];
+  List<String> todoList = [];*/
+  ///Essa lista é observavel se mudar algo internamente ela sabe que mudou e notifica os observadores
+  ObservableList<String> todoList = ObservableList<String>();
 
   @action
   void addTodo(){
-    todoList = List.from(todoList..add(_newTodoTitle));
+    todoList.add(_newTodoTitle);
   }
 
 }
