@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:todo_simple_mobx/stores/login_store.dart';
 import 'package:todo_simple_mobx/widgets/custom_icon_button.dart';
 import 'package:todo_simple_mobx/widgets/custom_text_field.dart';
@@ -13,6 +14,34 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginStore loginStore = LoginStore();
+
+  ///para a reaction não ficar executando para sempre consumindo recursos sem necessidade
+  ReactionDisposer? disposer;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    ///AUTORUN REACTION EXECUTA INICIALMENTE
+    disposer = autorun((_) {
+      print("está logado: ${loginStore.isLoggedIn}");
+      if (loginStore.isLoggedIn) {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (_) => ListScreen()));
+      }
+    });
+
+    ///Exemplo de reaction que só executa quando um valor é alterado
+    disposer = reaction(
+
+        ///recebe uma funcao
+        (_) => loginStore.isLoggedIn,
+
+        ///Tem um efeito ao mudar o estado
+        (isLoggedIn) {
+      print("jovem seu login é $isLoggedIn");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,21 +96,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         return SizedBox(
                           height: 44,
                           child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(32),
-                            ),
-                            child: loginStore.loading
-                                ? CircularProgressIndicator(
-                                    valueColor:
-                                        AlwaysStoppedAnimation(Colors.white),
-                                  )
-                                : Text('Login'),
-                            color: Theme.of(context).primaryColor,
-                            disabledColor:
-                                Theme.of(context).primaryColor.withAlpha(100),
-                            textColor: Colors.white,
-                            onPressed: loginStore.loginPressed
-                          ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(32),
+                              ),
+                              child: loginStore.loading
+                                  ? CircularProgressIndicator(
+                                      valueColor:
+                                          AlwaysStoppedAnimation(Colors.white),
+                                    )
+                                  : Text('Login'),
+                              color: Theme.of(context).primaryColor,
+                              disabledColor:
+                                  Theme.of(context).primaryColor.withAlpha(100),
+                              textColor: Colors.white,
+                              onPressed: loginStore.loginPressed),
                         );
                       },
                     ),
@@ -91,5 +119,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose(){
+    disposer!();
+    super.dispose();
   }
 }
