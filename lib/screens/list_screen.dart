@@ -14,6 +14,8 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   ListStore listStore = ListStore();
 
+  final TextEditingController controllerFieldTodo = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -59,13 +61,19 @@ class _ListScreenState extends State<ListScreen> {
                       children: <Widget>[
                         Observer(builder: (_) {
                           return CustomTextField(
+                            controller: controllerFieldTodo,
                             hint: 'Tarefa',
                             onChanged: listStore.setNewTodoTitle,
                             suffix: listStore.titleValid
                                 ? CustomIconButton(
                               radius: 32,
                               iconData: Icons.add,
-                              onTap: listStore.addTodo,
+                              onTap: () {
+                                listStore.addTodo();
+                                WidgetsBinding.instance?.addPostFrameCallback(
+                                    (_) => controllerFieldTodo.clear()
+                                );
+                              },
                             )
                                 : null,
                           );

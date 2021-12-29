@@ -27,7 +27,9 @@ abstract class _ListStore with Store {
 
   @action
   void addTodo(){
-    todoList.add(TarefaStore(_newTodoTitle));
+    ///Inserir item na primeira posicao da lista
+    todoList.insert(0, TarefaStore(_newTodoTitle));
+    _newTodoTitle = "";
   }
 
 }
