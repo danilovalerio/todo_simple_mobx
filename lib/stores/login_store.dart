@@ -11,7 +11,7 @@ abstract class _LoginStore with Store {
     autorun((_) {
       print(isFormValid);
 
-      /* //exemplo do uso
+      /* //exemplo do uso7
       print("email: $email");
       print("pass: $password");*/
     });
@@ -75,5 +75,12 @@ abstract class _LoginStore with Store {
 
     loading = false;
     isLoggedIn = true;
+  }
+
+  @action
+  void logout(){
+    isLoggedIn = false;
+    email = "";
+    password = "";
   }
 }

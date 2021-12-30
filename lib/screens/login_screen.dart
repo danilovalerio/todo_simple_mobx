@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_simple_mobx/stores/login_store.dart';
 import 'package:todo_simple_mobx/widgets/custom_icon_button.dart';
 import 'package:todo_simple_mobx/widgets/custom_text_field.dart';
@@ -13,7 +14,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginStore loginStore = LoginStore();
+  LoginStore? loginStore; //LoginStore();
+
 
   ///para a reaction não ficar executando para sempre consumindo recursos sem necessidade
   ReactionDisposer? disposer;
@@ -22,10 +24,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+    loginStore = Provider.of<LoginStore>(context);
+
     ///AUTORUN REACTION EXECUTA INICIALMENTE
     disposer = autorun((_) {
-      print("está logado: ${loginStore.isLoggedIn}");
-      if (loginStore.isLoggedIn) {
+      print("está logado: ${loginStore!.isLoggedIn}");
+      if (loginStore!.isLoggedIn) {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (_) => ListScreen()));
       }
@@ -35,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     disposer = reaction(
 
         ///recebe uma funcao
-        (_) => loginStore.isLoggedIn,
+        (_) => loginStore!.isLoggedIn,
 
         ///Tem um efeito ao mudar o estado
         (isLoggedIn) {
@@ -65,8 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         hint: 'E-mail',
                         prefix: Icon(Icons.account_circle),
                         textInputType: TextInputType.emailAddress,
-                        onChanged: loginStore.setEmail,
-                        enabled: !loginStore.loading,
+                        onChanged: loginStore?.setEmail,
+                        enabled: !loginStore!.loading,
                       );
                     }),
                     const SizedBox(
@@ -76,15 +80,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       return CustomTextField(
                         hint: 'Senha',
                         prefix: Icon(Icons.lock),
-                        obscure: loginStore.obscurePassword,
-                        onChanged: loginStore.setPassword,
-                        enabled: !loginStore.loading,
+                        obscure: loginStore!.obscurePassword,
+                        onChanged: loginStore!.setPassword,
+                        enabled: !loginStore!.loading,
                         suffix: CustomIconButton(
                           radius: 32,
-                          iconData: loginStore.obscurePassword
+                          iconData: loginStore!.obscurePassword
                               ? Icons.visibility
                               : Icons.visibility_off,
-                          onTap: loginStore.toggleObscurePassword,
+                          onTap: loginStore!.toggleObscurePassword,
                         ),
                       );
                     }),
@@ -99,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(32),
                               ),
-                              child: loginStore.loading
+                              child: loginStore!.loading
                                   ? CircularProgressIndicator(
                                       valueColor:
                                           AlwaysStoppedAnimation(Colors.white),
@@ -109,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               disabledColor:
                                   Theme.of(context).primaryColor.withAlpha(100),
                               textColor: Colors.white,
-                              onPressed: loginStore.loginPressed),
+                              onPressed: loginStore!.loginPressed),
                         );
                       },
                     ),
